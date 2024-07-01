@@ -54,11 +54,4 @@ def log_err(func='log_err', path_file='not_specified', message=None) -> None:
 
 
 if __name__ == "__main__":
-    # log_info(func='log_info', message='Check', path_file='report_email')
-    # log_err(func='log_err', message='Check', path_file='report_email')
-    # try:
-    #     sf
-    # except Exception as err:
-    #     log_err(func='log_err', message=err, path_file='report_email')
-
     pass
