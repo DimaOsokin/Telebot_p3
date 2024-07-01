@@ -9,7 +9,7 @@ def rename_to_1():
             passwd=connection_data.passwd,
             database=connection_data.database) as conn:
         with conn.cursor() as cursor:
-            sql_command = "UPDATE id SET lvl = 1 WHERE id_tg = 830244764"
+            sql_command = "UPDATE id SET lvl = 1 WHERE id_tg = id_telegram"
             cursor.execute(sql_command)
             conn.commit()
 
@@ -21,7 +21,7 @@ def rename_to_2():
             passwd=connection_data.passwd,
             database=connection_data.database) as conn:
         with conn.cursor() as cursor:
-            sql_command = "UPDATE id SET lvl = 2 WHERE id_tg = 830244764"
+            sql_command = "UPDATE id SET lvl = 2 WHERE id_tg = id_telegram"
             cursor.execute(sql_command)
             conn.commit()
 
@@ -33,7 +33,7 @@ def rename_to_3():
             passwd=connection_data.passwd,
             database=connection_data.database) as conn:
         with conn.cursor() as cursor:
-            sql_command = "UPDATE id SET lvl = 3 WHERE id_tg = 830244764"
+            sql_command = "UPDATE id SET lvl = 3 WHERE id_tg = id_telegram"
             cursor.execute(sql_command)
             conn.commit()
 
@@ -45,7 +45,7 @@ def rename_to_4():
             passwd=connection_data.passwd,
             database=connection_data.database) as conn:
         with conn.cursor() as cursor:
-            sql_command = "UPDATE id SET lvl = 4 WHERE id_tg = 830244764"
+            sql_command = "UPDATE id SET lvl = 4 WHERE id_tg = id_telegram"
             cursor.execute(sql_command)
             conn.commit()
 
@@ -57,7 +57,7 @@ def rename_to_5():
             passwd=connection_data.passwd,
             database=connection_data.database) as conn:
         with conn.cursor() as cursor:
-            sql_command = "UPDATE id SET lvl = 5 WHERE id_tg = 830244764"
+            sql_command = "UPDATE id SET lvl = 5 WHERE id_tg = id_telegram"
             cursor.execute(sql_command)
             conn.commit()
 
