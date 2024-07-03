@@ -713,6 +713,7 @@ async def main_menu_5_lvl(message):
                                    reply_markup=kp)
         elif message.text == 'Составить электронный отчёт':
             await report_email.create_calendar_for_email_report(message=message)
+
         else:
             await bot.send_message(message.chat.id, f"Нет такой команды - '{message.text}'\nНажмите 👉 /start")
 

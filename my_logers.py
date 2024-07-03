@@ -1,4 +1,4 @@
-def log_info(func='log_info', path_file='not_specified', message=None) -> None:
+async def log_info(func='log_info', path_file='not_specified', message=None) -> None:
     import logging
 
     # получение пользовательского логгера и установка уровня логирования
@@ -18,7 +18,7 @@ def log_info(func='log_info', path_file='not_specified', message=None) -> None:
     py_logger.info(message)
 
 
-def log_err(func='log_err', path_file='not_specified', message=None) -> None:
+async def log_err(func='log_err', path_file='not_specified', message=None) -> None:
     import logging
 
     # получение пользовательского логгера и установка уровня логирования
@@ -38,10 +38,13 @@ def log_err(func='log_err', path_file='not_specified', message=None) -> None:
     py_logger.exception(message)
 
 
+    await alert_message_to_telegram(func=func, path_file=path_file, message=message)
 
 
-
-
+async def alert_message_to_telegram(func, path_file, message) -> None:
+    from main import bot
+    chat_id_chanel = "-1002180252930"
+    await bot.send_message(chat_id=chat_id_chanel, text=f"Функция:{func}\nФайл:{path_file}\nОшибка:{message}")
 
 
 

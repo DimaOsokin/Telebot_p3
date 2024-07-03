@@ -50,12 +50,12 @@ async def send_email_True(id_user) -> None:
         server.starttls()
         server.login(data_report_email.login_email, data_report_email.pswd_email)
         server.sendmail(msg['From'], msg['To'], msg.as_string())
-        my_logers.log_info(
+        await my_logers.log_info(
             func='send_email_True',
             path_file='report_email',
             message=f'Успех\n{msg}')
     except Exception as err:
-        my_logers.log_err(
+        await my_logers.log_err(
             func='send_email_True',
             path_file='report_email',
             message=err)
@@ -129,6 +129,7 @@ async def create_calendar_for_email_report(message):
 
 async def call_main_report_email(message, date_range_list):
     try:
+        ads
         await main_report_email(message=message, date_range_list=date_range_list)
         calendar_message_cache.clear()
         calendar_data_cache.clear()
@@ -136,17 +137,17 @@ async def call_main_report_email(message, date_range_list):
         calendar_message_cache.clear()
         calendar_data_cache.clear()
         if 'gspread.exceptions.APIError_429' in str(err):
-            log_err(func='main_report_email', path_file='report_email', message=err)
+            await log_err(func='main_report_email', path_file='report_email', message=err)
             await bot.send_message(message.chat.id, f"Лист с выбранным диапазоном уже существует "
                                                     f"{date_range_list[0]} - {date_range_list[-1]}\n"
                                                     "Удалите лист с данным значением, либо введите другой диапазон")
         elif 'gspread.exceptions.APIError_400' in str(err):
-            log_err(func='two_dates_to_str', path_file='report_email', message=err)
+            await log_err(func='two_dates_to_str', path_file='report_email', message=err)
             await bot.send_message(message.chat.id, text=f"Превышено количество записей в минуту\n"
                                                          f"Таблица заполнена не полностью\n"
                                                          f"Удалите лист и попробуйте не менее чем, через минуту")
         else:
-            log_err(func='two_dates_to_str', path_file='report_email', message=err)
+            await log_err(func='call_main_report_email', path_file='report_email', message=err)
             await bot.send_message(message.chat.id, f"Неизвестная ошибка\n"
                                                     f"{err}\nПопробуйте снова")
 
@@ -184,7 +185,7 @@ async def two_dates_to_list(dates=dict) -> list:
             # запись диапазона в список
             date_list = [x.strftime("%d.%m.%Y") for x in date_range]
     except Exception as err:
-        log_err(
+        await log_err(
             func='Формирование дат (other Except)',
             message=err,
             path_file='report_email')
@@ -231,7 +232,7 @@ async def main_report_email(message, date_range_list):
             raise Exception('gspread.exceptions.APIError_400')
     # все остальные ошибки
     except Exception as err:
-        log_err(
+        await log_err(
             func='report_email_AUTO_values (workbook.add_worksheet)',
             message=err,
             path_file='report_email')
@@ -347,7 +348,7 @@ async def main_report_email(message, date_range_list):
             if 'Quota exceeded for quota metric' in str(err):
                 raise Exception('gspread.exceptions.APIError_400')
         except Exception as err:
-            log_err(func='log_err (for automatic_dict)', message=err, path_file='report_email')
+            await log_err(func='log_err (for automatic_dict)', message=err, path_file='report_email')
 
     # цикл по вложенному словарю
     for name_dict in sbor_and_UC_dict:
@@ -385,7 +386,7 @@ async def main_report_email(message, date_range_list):
             if 'Quota exceeded for quota metric' in str(err):
                 raise Exception('gspread.exceptions.APIError_400')
         except Exception as err:
-            log_err(func='log_err (for automatic_dict)', message=err, path_file='report_email')
+            await log_err(func='log_err (for automatic_dict)', message=err, path_file='report_email')
 
     await bot.send_message(message.chat.id, f"Готово")
 
@@ -423,7 +424,7 @@ async def report_email_AUTO_values(date=None) -> dict:
                                     range=auto_SAMPLE_RANGE_NAME).execute()
         values = result.get('values', [])
     except HttpError as err:
-        log_info(func="report_email_auto_values", path_file='report_email', message=f"{err}")
+        await log_info(func="report_email_auto_values", path_file='report_email', message=f"{err}")
 
     # сортировать список "values" по "Название изделий StarLine"
     values.sort(key=itemgetter(5))
@@ -477,7 +478,7 @@ async def report_email_AUTO_values(date=None) -> dict:
                         automatic_dict[row[1]]['Сколько затрачено времени? (часов\минут)'].append(row[10])
 
                 except Exception as err:
-                    log_err(func='report_email_AUTO_values', message=err, path_file='report_email')
+                    await log_err(func='report_email_AUTO_values', message=err, path_file='report_email')
     del values
 
     return automatic_dict
@@ -517,7 +518,7 @@ async def report_email_SBOR_and_UniCrimp_values(date=None) -> dict:
                                     range=sbor_SAMPLE_RANGE_NAME).execute()
         values = result.get('values', [])
     except HttpError as err:
-        log_info(
+        await log_info(
             func="report_email_SBOR_and_UniCrimp_values",
             path_file='report_email',
             message=err)
@@ -574,7 +575,7 @@ async def report_email_SBOR_and_UniCrimp_values(date=None) -> dict:
                             sbor_dict['Сборочный участок'][
                                 'Сколько затрачено времени? (часов\минут)'].append(row[6])
                 except Exception as err:
-                    log_err(
+                    await log_err(
                         func='report_email_SBOR_and_UniCrimp_values',
                         message=err,
                         path_file='report_email')
