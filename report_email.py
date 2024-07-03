@@ -129,7 +129,6 @@ async def create_calendar_for_email_report(message):
 
 async def call_main_report_email(message, date_range_list):
     try:
-        ads
         await main_report_email(message=message, date_range_list=date_range_list)
         calendar_message_cache.clear()
         calendar_data_cache.clear()

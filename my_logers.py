@@ -42,9 +42,16 @@ async def log_err(func='log_err', path_file='not_specified', message=None) -> No
 
 
 async def alert_message_to_telegram(func, path_file, message) -> None:
+    """
+    Отправляет сообщение об ошибках в тг-канал
+    :param func: Наименование функции в которой произошла ошибка
+    :param path_file: Файл с ошибкой
+    :param message: Сообщение об ошибке
+    :return: None
+    """
     from main import bot
     chat_id_chanel = "-1002180252930"
-    await bot.send_message(chat_id=chat_id_chanel, text=f"Функция:{func}\nФайл:{path_file}\nОшибка:{message}")
+    await bot.send_message(chat_id=chat_id_chanel, text=f"Функция: {func}\nФайл: {path_file}\nОшибка: {message}")
 
 
 
