@@ -1,15 +1,22 @@
 from __future__ import print_function
-from datetime import datetime, timedelta, date
+
+import math
+from datetime import datetime, timedelta
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from decimal import *
+
+import my_logers
 
 
 async def quality_indicators() -> list:
+    """
+    Показатели качества каждого месяца за текущий год
+    :return: list
+    """
     # При изменении этих областей удалить файл token.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
@@ -61,22 +68,18 @@ async def quality_indicators() -> list:
 
                 if current_month_iteration == values_month:
                     str_not_percent = x[-3].replace('%', '')
-                    count_check_productions += float(x[-5]) / 100 * float(str_not_percent)
-                    # print(count_check_productions, 'count_check_productions')
+                    tmp_check_productions = float(x[-5]) / 100 * float(str_not_percent)
+                    count_check_productions += round(tmp_check_productions, 2)
                     count_defect_productions += int(x[-1])
 
             except IndexError:  # пустая строка
-                # print(count_check_productions, 'count_check_productions')
-                print(x)
-            except Exception as err:
-                # print(f"for x in values (get_percent_defect_from_quality)\n{err}")
                 pass
+            except Exception as err:
+                await my_logers.log_err(func='quality_indicators', path_file='update_daily_report', message=err)
         # % выхода годной продукции
         percent_good_production = 100 - (count_defect_productions/count_check_productions * 100)
-        # decimal_number = Decimal(f"{count_check_productions}")
-        # count_check_productions = decimal_number.quantize(Decimal(f"1.00"))
-        return_values.append(f"Показатели за *{month_list[i]}*\nКоличество проверенных изделий: "
-                             f"*{count_check_productions}*\n"
+        return_values.append(f"Показатели за *{month_list[i]}*\n"
+                             f"Количество проверенных изделий: *{count_check_productions:.0f}*\n"
                              f"Количество изделий с дефектом: *{count_defect_productions}*\n"
                              f"% выхода годной продукции *{percent_good_production:.2f}*\n\n")
         # обнуление числовых показателей
