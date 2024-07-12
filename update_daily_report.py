@@ -26,13 +26,17 @@ async def auto_insert_report_sbor(day=1):
             cursor.execute(sql_command)
             # получаем данные из эксель таблицы за последний день
             for i in range(0, count_last_day_rows_excel):
-                # добавляем данные в БД за вчера
-                cursor.execute("INSERT INTO `Daily_report_sbor`  "
-                               "VALUES ('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')"
-                               % (values_report_sbor[i][0], values_report_sbor[i][1], values_report_sbor[i][2],
-                                  values_report_sbor[i][3], values_report_sbor[i][4], values_report_sbor[i][5],
-                                  values_report_sbor[i][6], values_report_sbor[i][7], values_report_sbor[i][8],
-                                  values_report_sbor[i][9]))
+                try:
+                    # добавляем данные в БД за вчера
+                    cursor.execute("INSERT INTO `Daily_report_sbor`  "
+                                   "VALUES ('%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s')"
+                                   % (values_report_sbor[i][0], values_report_sbor[i][1], values_report_sbor[i][2],
+                                      values_report_sbor[i][3], values_report_sbor[i][4], values_report_sbor[i][5],
+                                      values_report_sbor[i][6], values_report_sbor[i][7], values_report_sbor[i][8],
+                                      values_report_sbor[i][9]))
+                except Exception as err:
+                    import my_logers
+                    await my_logers.log_err(func='auto_insert_report_sbor', path_file='update_daily_report', message=err)
             conn.commit()
 
 
@@ -62,21 +66,26 @@ async def auto_insert_report_auto(day=1):
                     # выравнивает лист до длины в 22 символа
                     for count in range(count_append):
                         values_report_auto[i].append('')
-                # добавляет каждый элемент вложенного списка в БД
-                cursor.execute("INSERT INTO `Daily_report_auto` VALUES ('%s', '%s','%s','%s','%s','%s','%s','%s',"
-                               "'%s','%s', '%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s', '%s')"
-                               % (values_report_auto[i][0], values_report_auto[i][1], values_report_auto[i][2],
-                                  values_report_auto[i][3], values_report_auto[i][4], values_report_auto[i][5],
-                                  values_report_auto[i][6], values_report_auto[i][7], values_report_auto[i][8],
-                                  values_report_auto[i][9], values_report_auto[i][10],
-                                  values_report_auto[i][11],
-                                  values_report_auto[i][12], values_report_auto[i][13],
-                                  values_report_auto[i][14],
-                                  values_report_auto[i][15], values_report_auto[i][16],
-                                  values_report_auto[i][17],
-                                  values_report_auto[i][18], values_report_auto[i][19],
-                                  values_report_auto[i][20],
-                                  values_report_auto[i][21]))
+                try:
+                    # добавляет каждый элемент вложенного списка в БД
+                    cursor.execute("INSERT INTO `Daily_report_auto` VALUES ('%s', '%s','%s','%s','%s','%s','%s','%s',"
+                                   "'%s','%s', '%s', '%s', '%s','%s','%s','%s','%s','%s','%s','%s','%s', '%s')"
+                                   % (values_report_auto[i][0], values_report_auto[i][1], values_report_auto[i][2],
+                                      values_report_auto[i][3], values_report_auto[i][4], values_report_auto[i][5],
+                                      values_report_auto[i][6], values_report_auto[i][7], values_report_auto[i][8],
+                                      values_report_auto[i][9], values_report_auto[i][10],
+                                      values_report_auto[i][11],
+                                      values_report_auto[i][12], values_report_auto[i][13],
+                                      values_report_auto[i][14],
+                                      values_report_auto[i][15], values_report_auto[i][16],
+                                      values_report_auto[i][17],
+                                      values_report_auto[i][18], values_report_auto[i][19],
+                                      values_report_auto[i][20],
+                                      values_report_auto[i][21]))
+                except Exception as err:
+                    import my_logers
+                    await my_logers.log_err(func='auto_insert_report_auto', path_file='update_daily_report', message=err)
+
             conn.commit()
 
 
@@ -106,12 +115,17 @@ async def auto_insert_report_VRO(day=1):
                     # выравнивает лист до длины в 8 символов
                     for count in range(count_append):
                         values_report_VRO[i].append('')
-                # добавляет каждый элемент вложенного списка в БД
-                cursor.execute("INSERT INTO `Daily_report_VRO`"
-                               "VALUES ('%s', '%s','%s','%s','%s','%s','%s','%s')"
-                               % (values_report_VRO[i][0], values_report_VRO[i][1], values_report_VRO[i][2],
-                                  values_report_VRO[i][3], values_report_VRO[i][4], values_report_VRO[i][5],
-                                  values_report_VRO[i][6], values_report_VRO[i][7]))
+                try:
+                    # добавляет каждый элемент вложенного списка в БД
+                    cursor.execute("INSERT INTO `Daily_report_VRO`"
+                                   "VALUES ('%s', '%s','%s','%s','%s','%s','%s','%s')"
+                                   % (values_report_VRO[i][0], values_report_VRO[i][1], values_report_VRO[i][2],
+                                      values_report_VRO[i][3], values_report_VRO[i][4], values_report_VRO[i][5],
+                                      values_report_VRO[i][6], values_report_VRO[i][7]))
+                except Exception as err:
+                    import my_logers
+                    await my_logers.log_err(func='auto_insert_report_auto', path_file='update_daily_report', message=err)
+
             conn.commit()
 
 

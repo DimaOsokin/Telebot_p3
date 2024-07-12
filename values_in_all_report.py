@@ -43,8 +43,9 @@ def full_values_report_sbor(need_date=None) -> list:
     if need_date is not None:
         need_values = []
         for row in values:
-            if row[3] == need_date:
-                need_values.append(list(row))
+            if row:
+                if row[3] == need_date:
+                    need_values.append(list(row))
         values_return = need_values
         return values_return
     else:
@@ -84,8 +85,9 @@ def full_values_report_auto(need_date=None) -> list:
     if need_date is not None:
         need_values = []
         for row in values:
-            if row[3] == need_date:
-                need_values.append(list(row))
+            if row:
+                if row[3] == need_date:
+                    need_values.append(list(row))
         values = need_values
         return values
     else:
@@ -127,10 +129,10 @@ def full_values_report_VRO(need_date=None) -> list:
     if need_date != None:
         need_values = []
         for row in values:
-            if row[3] == need_date:
-                need_values.append(list(row))
+            if row:
+                if row[3] == need_date:
+                    need_values.append(list(row))
         values = need_values
-
         return values
     else:
         return values
