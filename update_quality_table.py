@@ -94,7 +94,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
 
     # Идентификатор и диапазон образца электронной таблицы.
     SAMPLE_SPREADSHEET_ID = '1fOmQgL7uDLzmNQ6ePdpNn6BVNJ8jcacYeB_6OxErHuU'
-    SAMPLE_RANGE_NAME = 'Выходной контроль качества!A2:AB'
+    SAMPLE_RANGE_NAME = 'Выходной контроль качества!A2:AC'
 
     # наполнение строками из excel таблицы
     values = []
@@ -142,7 +142,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
                     x[1] = datetime.strftime(x[1], "%d.%m.%y")
 
                     # в строке присутствует партия с дефектом
-                    if x[12] != '0':
+                    if x[13] != '0':
                         # проверить что столбец проведений инструктажа пуст (инструктажа проведено не было)
                         if (x[0] == specific_day) and (x[-4] == '-' or x[-4] == '' or x[-4] == ' '):
                             need_values.insert(0, x)
@@ -168,7 +168,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
                 x[1] = datetime.strftime(x[1], "%d.%m.%y")
 
                 # в строке присутствует партия с дефектом
-                if x[12] != '0':
+                if x[13] != '0':
                     # проверить что столбец проведений инструктажа пуст (инструктажа проведено не было)
                     if (x[0] == specific_day) and (x[-4] == '-' or x[-4] == '' or x[-4] == ' '):
                         need_values.insert(0, x)
@@ -192,7 +192,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
                 x[1] = datetime.strptime(x[1], "%d.%m.%y")
                 x[1] = datetime.strftime(x[1], "%d.%m.%y")
                 # в строке присутствует партия с дефектом
-                if x[12] != '0':
+                if x[13] != '0':
                     # проверить что столбец проведений инструктажа пуст (инструктажа проведено не было)
                     if (x[0] == specific_day) and (x[-4] == '-' or x[-4] == '' or x[-4] == ' '):
                         need_values.insert(0, x)
