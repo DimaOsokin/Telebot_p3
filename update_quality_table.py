@@ -22,7 +22,7 @@ async def quality_indicators() -> list:
 
     # Идентификатор и диапазон образца электронной таблицы.
     SAMPLE_SPREADSHEET_ID = '1fOmQgL7uDLzmNQ6ePdpNn6BVNJ8jcacYeB_6OxErHuU'
-    SAMPLE_RANGE_NAME = 'Выходной контроль качества!A2:M'
+    SAMPLE_RANGE_NAME = 'Выходной контроль качества!A2:N'
 
     # наполнение строками из excel таблицы
     values = []
@@ -68,8 +68,8 @@ async def quality_indicators() -> list:
 
                 if current_month_iteration == values_month:
                     str_not_percent = x[-3].replace('%', '')
-                    tmp_check_productions = float(x[-5]) / 100 * float(str_not_percent)
-                    count_check_productions += round(tmp_check_productions, 2)
+                    tmp_check_productions_in_paper = float(x[-5]) / 100 * float(str_not_percent)
+                    count_check_productions += round(tmp_check_productions_in_paper, 2)
                     count_defect_productions += int(x[-1])
 
             except IndexError:  # пустая строка
