@@ -117,8 +117,9 @@ def load_full_table_report_VRO():
             database=connection_data.database) as conn:
         with conn.cursor() as cursor:
             for i in range(len(values_report_VRO)):
-                if len(values_report_VRO[i]) != 7:
-                    count_append = 7 - len(values_report_VRO[i])
+                if len(values_report_VRO[i]) != 8:
+                    count_append = 8 - len(values_report_VRO[i])
+                    # выравнивает лист до длины в 8 символов
                     for count in range(count_append):
                         values_report_VRO[i].append('')
                 try:
