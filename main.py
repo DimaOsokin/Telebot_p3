@@ -612,12 +612,28 @@ async def start_message(message):
 
 
 async def see_all_employees(message):
-    list_people = select_all_employee()
-    peoples = ''
-    for row_tup in list_people:
-        row_str = '    '.join(map(str, row_tup))
-        peoples += f"{row_str}\n"
-    await bot.send_message(message.chat.id, peoples)
+    second_first_name = select_first_and_seconds_name(message.from_user.id)
+    if second_first_name != 0:
+        if user_lvl == '5':
+            await bot.send_message(message.chat.id, f"👋 Здравствуйте, {second_first_name}!")
+
+        list_people = select_all_employee()
+        peoples = ''
+        for row_tup in list_people:
+            row_str = '    '.join(map(str, row_tup))
+            peoples += f"{row_str}\n"
+        await bot.send_message(message.chat.id, peoples)
+    else:
+        await my_logers.log_err(
+            func='see_all_employees',
+            path_file='see_all_employees',
+            message='Не руководитель пытается посмотреть список всех сотрудников\n'
+                    f"Id пользователя: {message.from_user.id}\n"
+                    f"Имя: {message.from_user.first_name}\n"
+                    f"Фамилия: {message.from_user.last_name}\n"
+                    f"Username: {message.from_user.username}\n"
+                    )
+
 
 
 async def help_message(message):
@@ -657,7 +673,8 @@ async def start_message_5(message, user_lvl):
         [types.KeyboardButton(text="Мой график 📅 и отчёт 📋")],
         [types.KeyboardButton(text="Список сотрудников Победит 3 👨‍👨‍👦‍👦")],
         [types.KeyboardButton(text="Обновить отчёты ✍️")],
-        [types.KeyboardButton(text="Составить электронный отчёт")]
+        [types.KeyboardButton(text="Составить электронный отчёт")],
+        # [types.KeyboardButton(text="Посчитать норму")]
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
     await message.answer("Что необходимо выбрать?", reply_markup=keyboard)
@@ -713,6 +730,13 @@ async def main_menu_5_lvl(message):
                                    reply_markup=kp)
         elif message.text == 'Составить электронный отчёт':
             await report_email.create_calendar_for_email_report(message=message)
+        elif message.text == 'Посчитать норму':
+
+            from cachetools import TTLCache
+            colculation_norm_var = TTLCache(maxsize=50, ttl=300)
+
+            async def calculation_norm():
+                await bot.send_message(message.chat.id, colculation_norm_var)
 
         else:
             await bot.send_message(message.chat.id, f"Нет такой команды - '{message.text}'\nНажмите 👉 /start")

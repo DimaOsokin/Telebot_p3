@@ -1,5 +1,6 @@
 from mysql.connector import connect
 from datetime import date
+import my_logers
 # from update_daily_report import *
 
 
@@ -61,7 +62,7 @@ def check_lvl_user(id_tg) -> int:
                 result = result_fetchone[0]
                 return result
     except:
-        print(f'check_lvl_user\nДанный человек отсутствует в таблице')
+        print(f'connect_to_DB/check_lvl_user\nДанный человек отсутствует в таблице')
         return 0
 
 

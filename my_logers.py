@@ -1,4 +1,11 @@
 async def log_info(func='log_info', path_file='not_specified', message=None) -> None:
+    """
+
+    :param func: Название функции
+    :param path_file: Название файла
+    :param message: Описание ошибки
+    :return: None
+    """
     import logging
 
     # получение пользовательского логгера и установка уровня логирования
@@ -19,6 +26,13 @@ async def log_info(func='log_info', path_file='not_specified', message=None) -> 
 
 
 async def log_err(func='log_err', path_file='not_specified', message=None) -> None:
+    """
+
+    :param func: Название функции
+    :param path_file: Название файла
+    :param message: Описание ошибки
+    :return: None
+    """
     import logging
 
     # получение пользовательского логгера и установка уровня логирования
