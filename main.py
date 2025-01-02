@@ -615,7 +615,7 @@ async def start_call_back(call: types.CallbackQuery):
             date_range_list = await report_email.two_dates_to_list(dates=dict(report_email.calendar_data_cache[user_id]))
             await report_email.call_main_report_email(message=call.message, date_range_list=date_range_list)
         except Exception as err:
-            await my_logers.log_err(func=f"start_call_back (Начать формирование отчёта)", message=err)
+            await my_logers.log_err(func=f"{__name__} start_call_back (Начать формирование отчёта)", message=err)
             await bot.send_message(call.message.chat.id, "Нажмите клавишу в нижнем меню для составления электронного отчёта")
 
 
