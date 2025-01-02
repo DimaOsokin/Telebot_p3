@@ -18,7 +18,7 @@ async def auto_insert_report_sbor(day=1):
         with conn.cursor() as cursor:
             need_day = (datetime.now() - timedelta(days=day)).strftime('%d.%m.%Y')
             # количество строк в эксель за вчера/сегодня
-            rows_in_excel_table = full_values_report_sbor(need_day)
+            rows_in_excel_table = await full_values_report_sbor(need_day)
             # количество записей в эксель
             count_last_day_rows_excel = len(rows_in_excel_table)
             values_report_sbor = rows_in_excel_table

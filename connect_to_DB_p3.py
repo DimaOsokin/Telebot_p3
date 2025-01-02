@@ -1,7 +1,6 @@
 from mysql.connector import connect
 from datetime import date
 import my_logers
-# from update_daily_report import *
 
 
 async def select_all_employee():
