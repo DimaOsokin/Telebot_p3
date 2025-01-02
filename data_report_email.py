@@ -5,3 +5,5 @@ check_fio_for_send_email_address = ['Имя Фамилия', 'Имя Фамил�
 
 login_email = "login_email"
 pswd_email = "pswd_email"
+
+chat_id_chanel = "-chat_id_chanel"
