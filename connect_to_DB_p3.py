@@ -4,7 +4,7 @@ import my_logers
 # from update_daily_report import *
 
 
-def select_all_employee():
+async def select_all_employee():
     try:
         import connection_data
         with connect(
@@ -16,13 +16,13 @@ def select_all_employee():
                 sql_command = "SELECT `id_wt`, `id_fio` FROM `id` ORDER BY `id_fio` ASC"
                 cursor.execute(sql_command)
                 result = cursor.fetchall()
-    except:
-        print('Ошибка select_all_employee')
+    except Exception as err:
+        await my_logers.log_err(func=f"{__name__} select_all_employee", message=err)
 
     return result
 
 
-def select_first_and_seconds_name(id_tg):
+async def select_first_and_seconds_name(id_tg):
     """
     Получает Имя Фамилию
     Если в базе нет, то int(0)
@@ -41,13 +41,14 @@ def select_first_and_seconds_name(id_tg):
                 result_split = result_full_fio[0].split(' ')
                 result = result_split[1] + ' ' + result_split[2]
 
-    except:
+    except Exception as err:
+        await my_logers.log_err(func=f"{__name__} select_first_and_seconds_name", message=err)
         return 0
 
     return result
 
 
-def check_lvl_user(id_tg) -> int:
+async def check_lvl_user(id_tg) -> int:
     try:
         import connection_data
         with connect(
@@ -61,8 +62,8 @@ def check_lvl_user(id_tg) -> int:
                 result_fetchone = cursor.fetchone()
                 result = result_fetchone[0]
                 return result
-    except:
-        print(f'connect_to_DB/check_lvl_user\nДанный человек отсутствует в таблице')
+    except Exception as err:
+        await my_logers.log_err(func=f"{__name__} check_lvl_user", message=err)
         return 0
 
 
@@ -82,10 +83,10 @@ async def check_fio(id_tg) -> str:
                 result = str(result_full_str[0]) + ' ' + str(result_full_str[1])
                 return result
     except Exception as err:
-        print('check_fio\n', err)
+        await my_logers.log_err(func=f"{__name__} check_fio", message=err)
 
 
-def check_report_yesterday_or_today_sbor(need_day, user_fio=None):
+async def check_report_yesterday_or_today_sbor(need_day, user_fio=None):
     try:
         import connection_data
         with connect(
@@ -132,7 +133,7 @@ def check_report_yesterday_or_today_sbor(need_day, user_fio=None):
     except IndexError:
         pass
     except Exception as err:
-        print(err, 'Ошибка check_report_yesterday_or_today_sbor')
+        await my_logers.log_err(func=f"{__name__} check_report_yesterday_or_today_sbor", message=err)
 
     # вернет строку
     if user_fio is not None:
@@ -143,7 +144,7 @@ def check_report_yesterday_or_today_sbor(need_day, user_fio=None):
         return result_list
 
 
-def check_report_yesterday_or_today_auto(need_day, user_fio=None):
+async def check_report_yesterday_or_today_auto(need_day, user_fio=None):
     try:
         import connection_data
         with connect(
@@ -190,7 +191,7 @@ def check_report_yesterday_or_today_auto(need_day, user_fio=None):
     except IndexError:
         pass
     except Exception as err:
-        print(err, 'Ошибка check_report_yesterday_or_today_auto')
+        await my_logers.log_err(func=f"{__name__} check_report_yesterday_or_today_auto", message=err)
 
     # вернет строку
     if user_fio is not None:
@@ -201,7 +202,7 @@ def check_report_yesterday_or_today_auto(need_day, user_fio=None):
         return result_list
 
 
-def check_report_yesterday_or_today_VRO(need_day, user_fio=None):
+async def check_report_yesterday_or_today_VRO(need_day, user_fio=None):
     try:
         import connection_data
         with connect(
@@ -235,7 +236,7 @@ def check_report_yesterday_or_today_VRO(need_day, user_fio=None):
     except IndexError:
         pass
     except Exception as err:
-        print(err, 'Ошибка check_report_yesterday_or_today_VRO')
+        await my_logers.log_err(func=f"{__name__} check_report_yesterday_or_today_VRO", message=err)
     # вернет строку
     if user_fio is not None:
         return result
@@ -245,7 +246,7 @@ def check_report_yesterday_or_today_VRO(need_day, user_fio=None):
         return result_list
 
 
-def check_in_DB_last_day_sbor() -> str:
+async def check_in_DB_last_day_sbor() -> str:
     """
     Проверяет последний день в БД
     """
@@ -269,7 +270,7 @@ def check_in_DB_last_day_sbor() -> str:
     return last_day
 
 
-def check_report_today_sbor():
+async def check_report_today_sbor():
     """
     Смотрит, есть ли отчеты в БД за сегодня
     Есть -> добавляет недостающие строки
@@ -280,13 +281,13 @@ def check_report_today_sbor():
     last_day_DB = check_in_DB_last_day_sbor()
 
     if today == last_day_DB:
-        today_return = check_report_yesterday_or_today_sbor(today)
+        today_return = await check_report_yesterday_or_today_sbor(today)
         return today_return
     else:
         return None
 
 
-def check_in_DB_last_day_auto() -> str:
+async def check_in_DB_last_day_auto() -> str:
     """
     Проверяет последний день в БД
     """
@@ -310,7 +311,7 @@ def check_in_DB_last_day_auto() -> str:
     return last_day
 
 
-def check_report_today_auto():
+async def check_report_today_auto():
     """
     Смотрит, есть ли отчеты в БД за сегодня
     Есть -> добавляет недостающие строки
@@ -321,13 +322,13 @@ def check_report_today_auto():
     last_day_DB = check_in_DB_last_day_auto()
 
     if today == last_day_DB:
-        today_return = check_report_yesterday_or_today_auto(today)
+        today_return = await check_report_yesterday_or_today_auto(today)
         return today_return
     else:
         return None
 
 
-def check_in_DB_last_day_VRO() -> str:
+async def check_in_DB_last_day_VRO() -> str:
     """
     Проверяет последний день в БД
     """
@@ -351,7 +352,7 @@ def check_in_DB_last_day_VRO() -> str:
     return last_day
 
 
-def check_report_today_VRO():
+async def check_report_today_VRO():
     """
     Смотрит, есть ли отчеты в БД за сегодня
     Есть -> добавляет недостающие строки
@@ -362,7 +363,7 @@ def check_report_today_VRO():
     last_day_DB = check_in_DB_last_day_VRO()
 
     if today == last_day_DB:
-        today_return = check_report_yesterday_or_today_VRO(today)
+        today_return = await check_report_yesterday_or_today_VRO(today)
         return today_return
     else:
         return None

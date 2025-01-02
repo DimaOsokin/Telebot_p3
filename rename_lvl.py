@@ -1,6 +1,6 @@
 from mysql.connector import connect
 import connection_data
-
+import my_logers
 
 def rename_to_1():
     with connect(
@@ -72,41 +72,41 @@ async def rename_full_lvls(message):
             try:
                 rename_to_1()
                 await bot.send_message(message.chat.id, 'Ваш уровень доступа изменен 1 - сборщик')
-            except Exception as e:
-                print(e)
-                await bot.send_message(message.chat.id, f'{e}\nНе удалось изменить уровень доступа - сборщик')
+            except Exception as err:
+                await my_logers.log_err(func=f"{__name__} rename_full_lvls (сборщик)", message=err)
+                await bot.send_message(message.chat.id, f'{err}\nНе удалось изменить уровень доступа - сборщик')
 
         elif message.text == '22':
             try:
                 rename_to_2()
                 await bot.send_message(message.chat.id, 'Ваш уровень доступа изменен 2 - оператор')
-            except Exception as e:
-                print(e)
-                await bot.send_message(message.chat.id, f'{e}\nНе удалось изменить уровень доступа - оператор')
+            except Exception as err:
+                await my_logers.log_err(func=f"{__name__} rename_full_lvls (оператор)", message=err)
+                await bot.send_message(message.chat.id, f'{err}\nНе удалось изменить уровень доступа - оператор')
 
         elif message.text == '23':
             try:
                 rename_to_3()
                 await bot.send_message(message.chat.id, 'Ваш уровень доступа изменен 3 - контролер')
-            except Exception as e:
-                print(e)
-                await bot.send_message(message.chat.id, f'{e}\nНе удалось изменить уровень доступа - контролер')
+            except Exception as err:
+                await my_logers.log_err(func=f"{__name__} rename_full_lvls (контролер)", message=err)
+                await bot.send_message(message.chat.id, f'{err}\nНе удалось изменить уровень доступа - контролер')
 
         elif message.text == '24':
             try:
                 rename_to_4()
                 await bot.send_message(message.chat.id, 'Ваш уровень доступа изменен 4 - кладовщик')
-            except Exception as e:
-                print(e)
-                await bot.send_message(message.chat.id, f'{e}\nНе удалось изменить уровень доступа - кладовщик')
+            except Exception as err:
+                await my_logers.log_err(func=f"{__name__} rename_full_lvls (кладовщик)", message=err)
+                await bot.send_message(message.chat.id, f'{err}\nНе удалось изменить уровень доступа - кладовщик')
 
         elif message.text == '25':
             try:
                 rename_to_5()
                 await bot.send_message(message.chat.id, 'Ваш уровень доступа изменен 5 - руководитель')
-            except Exception as e:
-                print(e)
-                await bot.send_message(message.chat.id, f'{e}\nНе удалось изменить уровень доступа - руководитель')
+            except Exception as err:
+                await my_logers.log_err(func=f"{__name__} rename_full_lvls (руководитель)", message=err)
+                await bot.send_message(message.chat.id, f'{err}\nНе удалось изменить уровень доступа - руководитель')
 
 
 if __name__ == '__main__':

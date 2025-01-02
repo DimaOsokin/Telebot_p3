@@ -1,8 +1,10 @@
-async def log_info(func='log_info', path_file='not_specified', message=None) -> None:
+import data_report_email
+
+
+async def log_info(func='log_info', message=None) -> None:
     """
 
     :param func: Название функции
-    :param path_file: Название файла
     :param message: Описание ошибки
     :return: None
     """
@@ -13,8 +15,8 @@ async def log_info(func='log_info', path_file='not_specified', message=None) -> 
     py_logger.setLevel(logging.INFO)
 
     # настройка обработчика и форматировщика в соответствии с нашими нуждами
-    py_handler = logging.FileHandler(f"log/{path_file}.log", mode='a+', encoding='utf-8')
-    py_formatter = logging.Formatter("\n%(name)s %(asctime)s %(levelname)s %(message)s",
+    py_handler = logging.FileHandler(f"log/info_log.log", mode='a+', encoding='utf-8')
+    py_formatter = logging.Formatter("\n%(name)s %(asctime)s %(levelname)s\n%(message)s",
                                      datefmt='%d.%m.%y %H:%M:%S')
 
     # добавление форматировщика к обработчику
@@ -25,11 +27,10 @@ async def log_info(func='log_info', path_file='not_specified', message=None) -> 
     py_logger.info(message)
 
 
-async def log_err(func='log_err', path_file='not_specified', message=None) -> None:
+async def log_err(func='log_err', message=None) -> None:
     """
 
     :param func: Название функции
-    :param path_file: Название файла
     :param message: Описание ошибки
     :return: None
     """
@@ -40,8 +41,8 @@ async def log_err(func='log_err', path_file='not_specified', message=None) -> No
     py_logger.setLevel(logging.ERROR)
 
     # настройка обработчика и форматировщика в соответствии с нашими нуждами
-    py_handler = logging.FileHandler(f"log/{path_file}.log", mode='a+', encoding='utf-8')
-    py_formatter = logging.Formatter("\n%(name)s %(asctime)s %(levelname)s %(message)s",
+    py_handler = logging.FileHandler(f"log/error_log.log", mode='a+', encoding='utf-8')
+    py_formatter = logging.Formatter("\n%(name)s %(asctime)s %(levelname)s\n%(message)s",
                                      datefmt='%d.%m.%y %H:%M:%S')
 
     # добавление форматировщика к обработчику
@@ -52,20 +53,19 @@ async def log_err(func='log_err', path_file='not_specified', message=None) -> No
     py_logger.exception(message)
 
 
-    await alert_message_to_telegram(func=func, path_file=path_file, message=message)
+    await alert_message_to_telegram(func=func, message=message)
 
 
-async def alert_message_to_telegram(func, path_file, message) -> None:
+async def alert_message_to_telegram(func, message) -> None:
     """
     Отправляет сообщение об ошибках в тг-канал
     :param func: Наименование функции в которой произошла ошибка
-    :param path_file: Файл с ошибкой
     :param message: Сообщение об ошибке
     :return: None
     """
     from main import bot
-    chat_id_chanel = "-1002180252930"
-    await bot.send_message(chat_id=chat_id_chanel, text=f"Функция: {func}\nФайл: {path_file}\nОшибка: {message}")
+    chat_id_chanel = data_report_email.chat_id_chanel
+    await bot.send_message(chat_id=chat_id_chanel, text=f"Функция: {func}\nОшибка: {message}")
 
 
 

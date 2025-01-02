@@ -43,7 +43,7 @@ async def start(message):
     :return: None
     """
     global user_lvl
-    user_lvl = check_lvl_user(message.from_user.id)
+    user_lvl = await check_lvl_user(message.from_user.id)
     if type(message) == types.Message:
         # команды
         if message.text == '/start':
@@ -78,10 +78,10 @@ async def start_call_back(call: types.CallbackQuery):
         # инлайн кнопка за вчера или сегодня
         if call.data == 'start_inlain_sbor_btn2':
             yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
-            report_data_list = check_report_yesterday_or_today_sbor(need_day=yesterday)
+            report_data_list = await check_report_yesterday_or_today_sbor(need_day=yesterday)
         elif call.data == 'start_inlain_sbor_btn3':
             today = (datetime.now() - timedelta(days=0)).strftime('%d.%m.%Y')
-            report_data_list = check_report_yesterday_or_today_sbor(need_day=today)
+            report_data_list = await check_report_yesterday_or_today_sbor(need_day=today)
 
         try:
             local_values = ''
@@ -119,7 +119,16 @@ async def start_call_back(call: types.CallbackQuery):
             await bot.send_message(call.message.chat.id, text='Нет отчетов за выбранный день')
         # другие ошибки
         except Exception as err:
-            print('start_inlain_sbor_btn2\n', err)
+            await my_logers.log_err(func=f"{__name__} start_call_back ({call.data})", message=err)
+
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"Руководитель нажал - {call.data}\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
 
 
     if call.data == 'start_inlain_only_auto_btn1':
@@ -132,10 +141,10 @@ async def start_call_back(call: types.CallbackQuery):
         # инлайн кнопка за вчера или сегодня
         if call.data == 'start_inlain_only_auto_btn2':
             yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
-            report_data_list = check_report_yesterday_or_today_auto(need_day=yesterday)
+            report_data_list = await check_report_yesterday_or_today_auto(need_day=yesterday)
         elif call.data == 'start_inlain_only_auto_btn3':
             today = (datetime.now() - timedelta(days=0)).strftime('%d.%m.%Y')
-            report_data_list = check_report_yesterday_or_today_auto(need_day=today)
+            report_data_list = await check_report_yesterday_or_today_auto(need_day=today)
 
         try:
             local_values = ''
@@ -174,8 +183,16 @@ async def start_call_back(call: types.CallbackQuery):
             await bot.send_message(call.message.chat.id, text='Нет отчетов за вчерашний день')
         # другие ошибки
         except Exception as err:
-            print('start_inlain_auto_btn2\n', err)
+            await my_logers.log_err(func=f"{__name__} start_call_back ({call.data})", message=err)
 
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"Руководитель нажал - {call.data}\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
 
     if call.data == 'start_inlain_only_VRO_btn1':
         await bot.send_message(call.message.chat.id, 'В разработке4 👩🏻‍💻')
@@ -186,10 +203,10 @@ async def start_call_back(call: types.CallbackQuery):
         # инлайн кнопка за вчера или сегодня
         if call.data == 'start_inlain_only_VRO_btn2':
             yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
-            report_data_list = check_report_yesterday_or_today_VRO(need_day=yesterday)
+            report_data_list = await check_report_yesterday_or_today_VRO(need_day=yesterday)
         elif call.data == 'start_inlain_only_VRO_btn3':
             today = (datetime.now() - timedelta(days=0)).strftime('%d.%m.%Y')
-            report_data_list = check_report_yesterday_or_today_VRO(need_day=today)
+            report_data_list = await check_report_yesterday_or_today_VRO(need_day=today)
 
         try:
             local_values = ''
@@ -228,8 +245,16 @@ async def start_call_back(call: types.CallbackQuery):
             await bot.send_message(call.message.chat.id, text='Нет отчетов за вчерашний день')
         # другие ошибки
         except Exception as err:
-            print('start_inlain_auto_btn2\n', err)
+            await my_logers.log_err(func=f"{__name__} start_call_back ({call.data})", message=err)
 
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"Руководитель нажал - {call.data}\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
 
     if call.data == 'menu_inlain_lvl_1_check_report':
         # извлекает ИМЯ и ФАМИЛИЯ пользователя
@@ -265,15 +290,35 @@ async def start_call_back(call: types.CallbackQuery):
                 await bot.send_message(call.message.chat.id,
                                        text=get_today_report_inlain_btn_VRO, parse_mode='Markdown')
 
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"Сотрудник смотрит свои отчёты\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
+
+
     elif call.data == 'menu_inlain_lvl_1_my_calendar':
         true_id_user = call.message.chat.id
         # по умолчанию в словаре call.message.from_user находится id бота, а не пользователя
         # копирует id чата в id пользователя (иначе calendar.check_fio не находит пользователя)
         # иначе в БД ищет пользователя по id чата, а не пользователя
         call.message['from']['id'] = true_id_user
-        user_lvl = check_lvl_user(call.message.chat.id)
+        user_lvl = await check_lvl_user(call.message.chat.id)
         await get_calendar(call.message, user_lvl)
         await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
+
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"Сотрудник смотрит свой график\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
+
 
     elif (call.data == 'Обновить отчёты за вчера') or (call.data == 'Обновить отчёты за сегодня'):
         if call.data == 'Обновить отчёты за вчера':
@@ -283,10 +328,21 @@ async def start_call_back(call: types.CallbackQuery):
             await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
             await auto_insert_reports(message=call.message, day='today')
 
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"{call.data}\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
+
+
     elif call.data == 'Вернуться в главное меню':
             await bot.delete_message(chat_id=call.message.chat.id, message_id=call.message.message_id)
             call.message['from']['id'] = call.message.chat.id
             await calendar_all.menu_inlain_lvl_1(call.message)
+
 
     elif call.data == 'Инлайн меню уровень 1 подработки':
         true_id_user = call.message.chat.id
@@ -321,7 +377,7 @@ async def start_call_back(call: types.CallbackQuery):
         # иначе в БД ищет пользователя по id чата, а не пользователя
         call.message['from']['id'] = true_id_user
 
-        user_lvl = check_lvl_user(call.message.from_user.id)
+        user_lvl = await check_lvl_user(call.message.from_user.id)
         fio = await check_fio(call.message.from_user.id)
         now_year = int(datetime.now().strftime('%Y'))
         # int_to_list_month([[текущий месяц][след месяц]],[[текущий год][след год]]) след год меняется на +1, если тек месяц Декабрь
@@ -460,6 +516,15 @@ async def start_call_back(call: types.CallbackQuery):
         # удалить сообщение message_is_beginning
         await bot.delete_message(chat_id=call.message.chat.id, message_id=message_is_beginning.message_id)
 
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message=f"{call.data}\n"
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
+
 
     elif call.data == 'Показатели качества за год':
         # удалить инлайн кнопки
@@ -476,6 +541,16 @@ async def start_call_back(call: types.CallbackQuery):
             send_message += "".join(i)
 
         await bot.send_message(call.message.from_user.id, send_message, parse_mode='Markdown')
+
+        await my_logers.log_info(
+            func=f"{__name__} start_call_back",
+            message='Показатели качества за год\n'
+                    f"Id пользователя: {call.from_user.id}\n"
+                    f"Имя: {call.from_user.first_name}\n"
+                    f"Фамилия: {call.from_user.last_name}\n"
+                    f"Username: {call.from_user.username}\n"
+        )
+
 
     elif call.data == 'Отправить ссылку False':
         from report_email import calendar_message_cache
@@ -526,18 +601,22 @@ async def start_call_back(call: types.CallbackQuery):
     elif call.data == 'Начать формирование отчёта':
         from report_email import calendar_message_cache
         user_id = call.message.chat.id
-        if calendar_message_cache[user_id]['send_to_email']:
-            await report_email.send_email_True(id_user=call.message.chat.id)
+        try:
+            if calendar_message_cache[user_id]['send_to_email']:
+                await report_email.send_email_True(id_user=call.message.chat.id)
 
-        await bot.delete_message(chat_id=call.message.chat.id,
-                                 message_id=calendar_message_cache[user_id]['id_call_message_calendar_1'])
-        await bot.delete_message(chat_id=call.message.chat.id,
-                                 message_id=calendar_message_cache[user_id]['id_call_message_calendar_2'])
-        await bot.delete_message(chat_id=call.message.chat.id,
-                                 message_id=calendar_message_cache[user_id]['id_call_message_calendar_menu'])
+            await bot.delete_message(chat_id=call.message.chat.id,
+                                     message_id=calendar_message_cache[user_id]['id_call_message_calendar_1'])
+            await bot.delete_message(chat_id=call.message.chat.id,
+                                     message_id=calendar_message_cache[user_id]['id_call_message_calendar_2'])
+            await bot.delete_message(chat_id=call.message.chat.id,
+                                     message_id=calendar_message_cache[user_id]['id_call_message_calendar_menu'])
 
-        date_range_list = await report_email.two_dates_to_list(dates=dict(report_email.calendar_data_cache[user_id]))
-        await report_email.call_main_report_email(message=call.message, date_range_list=date_range_list)
+            date_range_list = await report_email.two_dates_to_list(dates=dict(report_email.calendar_data_cache[user_id]))
+            await report_email.call_main_report_email(message=call.message, date_range_list=date_range_list)
+        except Exception as err:
+            await my_logers.log_err(func=f"start_call_back (Начать формирование отчёта)", message=err)
+            await bot.send_message(call.message.chat.id, "Нажмите клавишу в нижнем меню для составления электронного отчёта")
 
 
 async def get_calendar(message, user_lvl):
@@ -583,14 +662,14 @@ async def get_calendar(message, user_lvl):
             calendar_AU_now_month = await calendar_all.calendar(message, user_lvl='2', now_month=True)
             calendar_AU_next_month = await calendar_all.calendar(message, user_lvl='2', next_month=True)
             await bot.send_message(message.chat.id, str(f"{calendar_AU_now_month}\n\n{calendar_AU_next_month}"))
-        # операционный менеджер и ст. сборщик
+        # операционный менеджер и старший сборщик
         elif fio_list[0] == lvl_5_names.name7[0] or fio_list[0] == lvl_5_names.name3[0]:
             await bot.send_message(message.chat.id, 'Ваш график 5/2')
     await bot.delete_message(chat_id=message.chat.id, message_id=search_is_beginning.message_id)
 
 
 async def start_message(message):
-    second_first_name = select_first_and_seconds_name(message.from_user.id)
+    second_first_name = await select_first_and_seconds_name(message.from_user.id)
     if second_first_name != 0:
         if user_lvl == '5':
             await bot.send_message(message.chat.id, f"👋 Здравствуйте, {second_first_name}!")
@@ -612,21 +691,30 @@ async def start_message(message):
 
 
 async def see_all_employees(message):
-    second_first_name = select_first_and_seconds_name(message.from_user.id)
+    second_first_name = await select_first_and_seconds_name(message.from_user.id)
     if second_first_name != 0:
         if user_lvl == '5':
             await bot.send_message(message.chat.id, f"👋 Здравствуйте, {second_first_name}!")
 
-        list_people = select_all_employee()
+        list_people = await select_all_employee()
         peoples = ''
         for row_tup in list_people:
             row_str = '    '.join(map(str, row_tup))
             peoples += f"{row_str}\n"
         await bot.send_message(message.chat.id, peoples)
+
+        await my_logers.log_info(
+            func=f"{__name__} see_all_employees",
+            message='Список всех сотрудников Победит 3\n'
+                    f"Id пользователя: {message.from_user.id}\n"
+                    f"Имя: {message.from_user.first_name}\n"
+                    f"Фамилия: {message.from_user.last_name}\n"
+                    f"Username: {message.from_user.username}\n"
+        )
+
     else:
         await my_logers.log_err(
-            func='see_all_employees',
-            path_file='see_all_employees',
+            func=f"{__name__} see_all_employees",
             message='Не руководитель пытается посмотреть список всех сотрудников\n'
                     f"Id пользователя: {message.from_user.id}\n"
                     f"Имя: {message.from_user.first_name}\n"
@@ -639,6 +727,13 @@ async def see_all_employees(message):
 async def help_message(message):
     await bot.send_message(message.chat.id, "Напишите /start для начала работы")
 
+    await my_logers.log_info(
+        func=f"{__name__} help_message",
+        message=f"Id пользователя: {message.from_user.id}\n"
+                f"Имя: {message.from_user.first_name}\n"
+                f"Фамилия: {message.from_user.last_name}\n"
+                f"Username: {message.from_user.username}\n"
+    )
 
 # кладовщики
 async def start_message_4(message, user_lvl):
@@ -679,13 +774,32 @@ async def start_message_5(message, user_lvl):
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
     await message.answer("Что необходимо выбрать?", reply_markup=keyboard)
 
+    try:
+        await my_logers.log_info(
+            func=f"{__name__} start_message_5",
+            message=f"Руководитель нажал start \n"
+                    f"Id пользователя: {message.from_user.id}\n"
+                    f"Имя: {message.from_user.first_name}\n"
+                    f"Фамилия: {message.from_user.last_name}\n"
+                    f"Username: {message.from_user.username}\n"
+        )
+    except Exception as err:
+        await my_logers.log_err(
+            func=f"{__name__} start_message_5",
+            message=f"Ошибка записи в лог. start_message_5\n{err}\n"
+                    f"Id пользователя: {message.from_user.id}\n"
+                    f"Имя: {message.from_user.first_name}\n"
+                    f"Фамилия: {message.from_user.last_name}\n"
+                    f"Username: {message.from_user.username}\n"
+        )
+
 
 async def main_menu_5_lvl(message):
     if len(message.text) == 2:
         from rename_lvl import rename_full_lvls
         await rename_full_lvls(message)
     global user_lvl
-    user_lvl = check_lvl_user(message.from_user.id)
+    user_lvl = await check_lvl_user(message.from_user.id)
     if user_lvl == '1':
         if message.text == 'Меню':
             await start_message_1(message, user_lvl)
@@ -759,7 +873,7 @@ async def inlain_auto_insert_reports(message):
 
 async def report_yesterday(message):
     yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
-    yesterday_report = check_report_yesterday_or_today_sbor(yesterday)
+    yesterday_report = await check_report_yesterday_or_today_sbor(yesterday)
     await bot.send_message(message.chat.id, yesterday_report, parse_mode='Markdown')
 
 

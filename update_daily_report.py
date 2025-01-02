@@ -2,6 +2,7 @@ from mysql.connector import connect
 from datetime import datetime, timedelta
 import connection_data
 from values_in_all_report import *
+import my_logers
 
 
 async def auto_insert_report_sbor(day=1):
@@ -35,8 +36,7 @@ async def auto_insert_report_sbor(day=1):
                                       values_report_sbor[i][6], values_report_sbor[i][7], values_report_sbor[i][8],
                                       values_report_sbor[i][9]))
                 except Exception as err:
-                    import my_logers
-                    await my_logers.log_err(func='auto_insert_report_sbor', path_file='update_daily_report', message=err)
+                    await my_logers.log_err(func=f"{__name__} auto_insert_report_sbor", message={err})
             conn.commit()
 
 
@@ -53,7 +53,7 @@ async def auto_insert_report_auto(day=1):
         with conn.cursor() as cursor:
             need_day = (datetime.now() - timedelta(days=day)).strftime('%d.%m.%Y')
             # количество строк в эксель за вчера/сегодня
-            rows_in_excel_table = full_values_report_auto(need_day)
+            rows_in_excel_table = await full_values_report_auto(need_day)
             # количество записей в эксель
             values_report_auto = rows_in_excel_table
             # удалить записи за последний день из БД
@@ -83,8 +83,7 @@ async def auto_insert_report_auto(day=1):
                                       values_report_auto[i][20],
                                       values_report_auto[i][21]))
                 except Exception as err:
-                    import my_logers
-                    await my_logers.log_err(func='auto_insert_report_auto', path_file='update_daily_report', message=err)
+                    await my_logers.log_err(func=f"{__name__} auto_insert_report_auto", message={err})
 
             conn.commit()
 
@@ -102,7 +101,7 @@ async def auto_insert_report_VRO(day=1):
         with conn.cursor() as cursor:
             need_day = (datetime.now() - timedelta(days=day)).strftime('%d.%m.%Y')
             # количество строк в эксель за вчера/сегодня
-            rows_in_excel_table = full_values_report_VRO(need_day)
+            rows_in_excel_table = await full_values_report_VRO(need_day)
             # количество записей в эксель
             count_last_day_rows_excel = len(rows_in_excel_table)
             values_report_VRO = rows_in_excel_table
@@ -123,8 +122,7 @@ async def auto_insert_report_VRO(day=1):
                                       values_report_VRO[i][3], values_report_VRO[i][4], values_report_VRO[i][5],
                                       values_report_VRO[i][6], values_report_VRO[i][7]))
                 except Exception as err:
-                    import my_logers
-                    await my_logers.log_err(func='auto_insert_report_auto', path_file='update_daily_report', message=err)
+                    await my_logers.log_err(func=f"{__name__} auto_insert_report_VRO", message={err})
 
             conn.commit()
 
@@ -140,7 +138,7 @@ async def auto_insert_reports(message, day='yesterday'):
         who_day = 'сегодня'
 
     try:
-        await bot.send_message(message.chat.id, f'Начинаю обновлять отчёты за {who_day}')
+        await bot.send_message(message.chat.id, f'Начинаю обновлять отчёты за {who_day}, пожалуйста подождите')
         await auto_insert_report_sbor(day)
         await bot.send_message(message.chat.id, f"Обновлены отчёты СУ")
     except Exception as Exception_SU:
@@ -155,6 +153,7 @@ async def auto_insert_reports(message, day='yesterday'):
         await bot.send_message(message.chat.id, 'Обновлены отчёты ВРО')
     except Exception as Exception_VRO:
         await bot.send_message(message.chat.id, f'Ошибка обновления отчётов ВРО за вчера:\n{Exception_VRO}')
+
     await bot.send_message(message.chat.id, 'Завершено обновление отчётов')
 
 

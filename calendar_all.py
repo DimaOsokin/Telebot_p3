@@ -1,3 +1,6 @@
+import my_logers
+
+
 async def calendar(message, user_lvl, now_month=False, next_month=False, recursion=False):
     """
     Отправляет пользователю тот график смен, где у него стоят смены
@@ -10,7 +13,7 @@ async def calendar(message, user_lvl, now_month=False, next_month=False, recursi
     import calendar_auto
     import datetime
 
-    # год формата '1234'
+    # год формата '1970'
     now_year = int(datetime.datetime.now().strftime('%Y'))
 
     # int_to_list_month([[текущий месяц][след месяц]],[[текущий год][след год]]) след год меняется на +1, если тек месяц Декабрь
@@ -25,7 +28,6 @@ async def calendar(message, user_lvl, now_month=False, next_month=False, recursi
                 now_month_work_dates_string_sbor = await calendar_sbor.calendar_sbor_string(int_to_list_month[0][0], fio, now_year)
                 return f"График на сборочном участке на {int_to_list_month[0][0]}:\n" + now_month_work_dates_string_sbor
             except Exception as err:
-                # print(err)
                 return f"На сборочном участке на {int_to_list_month[0][0]} график еще не готов"
 
         elif next_month is True:
@@ -55,29 +57,6 @@ async def calendar(message, user_lvl, now_month=False, next_month=False, recursi
                     return f'На автоматическом участке на {int_to_list_month[0][1]} график еще не готов'
             except:  # следующий месяц отсутствует
                 return f'На автоматическом участке на {int_to_list_month[0][1]} график еще не готов'
-
-# # РУКОВОДСТВО
-#     # рекурсия для экономии места
-#     if user_lvl == '5' and recursion is False:
-#         import lvl_5_names
-#         # преобразование в лист, так как в str читает только первый символ
-#         fio_list = list(fio.split(' '))
-#         if fio_list[0] == lvl_5_names.name1[0]:
-#             await calendar(message, '1', True)
-#         elif fio_list[0] == lvl_5_names.name2[0]:
-#             await calendar(message, '1', True)
-#         elif fio_list[0] == lvl_5_names.name3[0]:
-#             await calendar(message, '1', True)
-#         elif fio_list[0] == lvl_5_names.name4[0]:
-#             await calendar(message, '2', True)
-#         elif fio_list[0] == lvl_5_names.name5[0]:
-#             await calendar(message, '2', True)
-#         elif fio_list[0] == lvl_5_names.name6[0]:
-#             await calendar(message, '2', True)
-#         elif fio_list[0] == lvl_5_names.name8[0]:
-#             await calendar(message, '1', True)
-#         elif fio_list[0] == lvl_5_names.name7[0]:
-#             await bot.send_message(message.chat.id, 'Ваш график 5/2')
 
 
 async def identify_month(now_year):

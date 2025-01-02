@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import pandas as pd
-
+import my_logers
 
 async def calendar_sbor_string(month=None, fio=None, year=None, weekends=False, next_month=False) -> str:
     """
@@ -50,8 +50,8 @@ async def calendar_sbor_string(month=None, fio=None, year=None, weekends=False, 
         result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
                                     range=SAMPLE_RANGE_NAME_end_space).execute()
         values = result.get('values', [])
-    except Exception as e:
-        print('calendar_sbor_string', e)
+    except Exception as err:
+        await my_logers.log_err(func=f"{__name__} select_all_employee", message=err)
 
     # преобразование всех данных в датафрейм
     valuesDF = pd.DataFrame(values)

@@ -5,9 +5,9 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+import my_logers
 
-
-def full_values_report_sbor(need_date=None) -> list:
+async def full_values_report_sbor(need_date=None) -> list:
     # При изменении этих областей удалите файл token.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
@@ -35,10 +35,10 @@ def full_values_report_sbor(need_date=None) -> list:
         values = result.get('values', [])
 
         if not values:
-            print('Таблица пуста.')
+            await my_logers.log_err(func=f"{__name__} select_all_employee", message="Таблица пуста")
             return None
     except HttpError as err:
-        print(f'full_values_report_sbor\n{err}')
+        await my_logers.log_err(func=f"{__name__} select_all_employee", message=err)
 
     if need_date is not None:
         need_values = []
@@ -52,7 +52,7 @@ def full_values_report_sbor(need_date=None) -> list:
         return values
 
 
-def full_values_report_auto(need_date=None) -> list:
+async def full_values_report_auto(need_date=None) -> list:
     # При изменении этих областей удалите файл token.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
@@ -80,7 +80,7 @@ def full_values_report_auto(need_date=None) -> list:
         values = result.get('values', [])
 
     except HttpError as err:
-        print(err)
+        await my_logers.log_err(func=f"{__name__} select_all_employee", message=err)
 
     if need_date is not None:
         need_values = []
@@ -94,7 +94,7 @@ def full_values_report_auto(need_date=None) -> list:
         return values
 
 
-def full_values_report_VRO(need_date=None) -> list:
+async def full_values_report_VRO(need_date=None) -> list:
     # При изменении этих областей удалите файл token.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
@@ -122,10 +122,11 @@ def full_values_report_VRO(need_date=None) -> list:
         values = result.get('values', [])
 
         if not values:
-            print('Таблица пуста.')
+            await my_logers.log_err(func=f"{__name__} select_all_employee", message="Таблица пуста")
             return None
     except HttpError as err:
-        print(err)
+        await my_logers.log_err(func=f"{__name__} full_values_report_VRO", message=err)
+
     if need_date != None:
         need_values = []
         for row in values:
@@ -142,6 +143,6 @@ if __name__ == '__main__':
 
     # full_values_report_sbor()
     # full_values_report_auto()
-    full_values_report_VRO()
+    # full_values_report_VRO()
 
     pass

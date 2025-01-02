@@ -46,7 +46,7 @@ async def quality_indicators() -> list:
                                     range=SAMPLE_RANGE_NAME).execute()
         values = result.get('values', [])
     except HttpError as err:
-        print(f'get_percent_defect_from_quality\n{err}')
+        await my_logers.log_err(func=f"{__name__} quality_indicators", message={err})
 
     month_list = ['Zero', 'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 
@@ -75,7 +75,7 @@ async def quality_indicators() -> list:
             except IndexError:  # пустая строка
                 pass
             except Exception as err:
-                await my_logers.log_err(func='quality_indicators', path_file='update_daily_report', message=err)
+                await my_logers.log_err(func=f"{__name__} quality_indicators", message={err})
         # % выхода годной продукции
         percent_good_production = 100 - (count_defect_productions/count_check_productions * 100)
         return_values.append(f"Показатели за *{month_list[i]}*\n"
@@ -118,7 +118,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
                                     range=SAMPLE_RANGE_NAME).execute()
         values = result.get('values', [])
     except HttpError as err:
-        print(f'from_excel_table_quality\n{err}')
+        await my_logers.log_err(func=f"{__name__} from_excel_table_quality", message={err})
 
     # глобальная для этой функции переменная для return
     need_values, need_time = [], []
@@ -151,7 +151,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
                 except ValueError:  # пустая строка
                     pass
                 except Exception as err:
-                    print(err, f"elif time_interval == 'last_week'\n{x}")
+                    await my_logers.log_err(func=f"{__name__} from_excel_table_quality", message={err})
         return need_values
 
     elif time_interval == 'yesterday':
@@ -177,7 +177,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
             except ValueError:  # пустая строка
                 pass
             except Exception as err:
-                print(err, "elif time_interval == 'yesterday'\n{x}")
+                await my_logers.log_err(func=f"{__name__} from_excel_table_quality", message={err})
         return need_values
 
     elif time_interval == 'today':
@@ -201,7 +201,7 @@ async def from_excel_table_quality(time_interval=None) -> list:
             except ValueError:  # пустая строка
                 pass
             except Exception as err:
-                print(err, "elif time_interval == 'today'\n{x}")
+                await my_logers.log_err(func=f"{__name__} from_excel_table_quality", message={err})
         return need_values
 
 

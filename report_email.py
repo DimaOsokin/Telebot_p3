@@ -50,15 +50,12 @@ async def send_email_True(id_user) -> None:
         server.starttls()
         server.login(data_report_email.login_email, data_report_email.pswd_email)
         server.sendmail(msg['From'], msg['To'], msg.as_string())
+
         await my_logers.log_info(
-            func='send_email_True',
-            path_file='report_email',
-            message=f'Успех\n{msg}')
+            func=f"{__name__} send_email_True \n{msg}")
     except Exception as err:
         await my_logers.log_err(
-            func='send_email_True',
-            path_file='report_email',
-            message=err)
+            func=f"{__name__} send_email_True", message=err)
     server.quit()
 
 
@@ -136,19 +133,22 @@ async def call_main_report_email(message, date_range_list):
         calendar_message_cache.clear()
         calendar_data_cache.clear()
         if 'gspread.exceptions.APIError_429' in str(err):
-            await log_err(func='main_report_email', path_file='report_email', message=err)
+            await log_err(func=f"{__name__} main_report_email",
+                          message=f"Лист с выбранным диапазоном уже существует\n{err}")
             await bot.send_message(message.chat.id, f"Лист с выбранным диапазоном уже существует "
                                                     f"{date_range_list[0]} - {date_range_list[-1]}\n"
                                                     "Удалите лист с данным значением, либо введите другой диапазон")
         elif 'gspread.exceptions.APIError_400' in str(err):
-            await log_err(func='two_dates_to_str', path_file='report_email', message=err)
+            await log_err(func=f"{__name__} two_dates_to_str",
+                          message=f"Превышено количество записей в минуту {err}")
             await bot.send_message(message.chat.id, text=f"Превышено количество записей в минуту\n"
-                                                         f"Таблица заполнена не полностью\n"
+                                                         f"Возможно таблица заполнена не полностью\n"
                                                          f"Удалите лист и попробуйте не менее чем, через минуту")
         else:
-            await log_err(func='call_main_report_email', path_file='report_email', message=err)
+            await log_err(func=f"{__name__} call_main_report_email", message=err)
             await bot.send_message(message.chat.id, f"Неизвестная ошибка\n"
-                                                    f"{err}\nПопробуйте снова")
+                                                    f"{err}\n"
+                                                    f"Попробуйте снова")
 
 async def two_dates_to_list(dates=dict) -> list:
     """
@@ -185,9 +185,7 @@ async def two_dates_to_list(dates=dict) -> list:
             date_list = [x.strftime("%d.%m.%Y") for x in date_range]
     except Exception as err:
         await log_err(
-            func='Формирование дат (other Except)',
-            message=err,
-            path_file='report_email')
+            func=f"{__name__} Формирование дат (other Except)", message=err)
         raise ValueError
 
     return date_list
@@ -231,10 +229,7 @@ async def main_report_email(message, date_range_list):
             raise Exception('gspread.exceptions.APIError_400')
     # все остальные ошибки
     except Exception as err:
-        await log_err(
-            func='report_email_AUTO_values (workbook.add_worksheet)',
-            message=err,
-            path_file='report_email')
+        await log_err(func=f"{__name__} main_report_email (workbook.add_worksheet)", message=err)
         raise Exception(err)
     worksheet.clear()
 
@@ -304,7 +299,7 @@ async def main_report_email(message, date_range_list):
 
     # получает значения с отчётов
     automatic_dict = await report_email_AUTO_values(date_range_list)
-    sbor_and_UC_dict = await report_email_SBOR_and_UniCrimp_values(date_range_list)
+    sbor_and_UC_dict = await report_email_SBOR_and_UniCrimp_or_HBQ_values(date_range_list)
     await bot.send_message(message.chat.id, f"Приступаю к формированию листа, это займёт около минуты")
 
     # изменяющийся номер строки
@@ -347,7 +342,7 @@ async def main_report_email(message, date_range_list):
             if 'Quota exceeded for quota metric' in str(err):
                 raise Exception('gspread.exceptions.APIError_400')
         except Exception as err:
-            await log_err(func='log_err (for automatic_dict)', message=err, path_file='report_email')
+            await log_err(func=f"{__name__} log_err (for automatic_dict)", message=err)
 
     # цикл по вложенному словарю
     for name_dict in sbor_and_UC_dict:
@@ -385,9 +380,19 @@ async def main_report_email(message, date_range_list):
             if 'Quota exceeded for quota metric' in str(err):
                 raise Exception('gspread.exceptions.APIError_400')
         except Exception as err:
-            await log_err(func='log_err (for automatic_dict)', message=err, path_file='report_email')
+            await log_err(func=f"{__name__} log_err (for automatic_dict)", message=err)
 
-    await bot.send_message(message.chat.id, f"Готово")
+    await bot.send_message(message.chat.id, f"Составление электронного отчёта успешно завершено.")
+
+    await my_logers.log_info(
+        func=f"{__name__} main_report_email",
+        message=f"Составление электронного отчёта. Даты: {full_date_str}\n"
+                f"Id пользователя: {message.chat.id}\n"
+                f"Имя: {message.chat.first_name}\n"
+                f"Фамилия: {message.chat.last_name}\n"
+                f"Username: {message.chat.username}\n"
+    )
+
 
 async def report_email_AUTO_values(date=None) -> dict:
     import os.path
@@ -423,7 +428,7 @@ async def report_email_AUTO_values(date=None) -> dict:
                                     range=auto_SAMPLE_RANGE_NAME).execute()
         values = result.get('values', [])
     except HttpError as err:
-        await log_info(func="report_email_auto_values", path_file='report_email', message=f"{err}")
+        await log_err(func=f"{__name__} report_email_auto_values", message=err)
 
     # сортировать список "values" по "Название изделий StarLine"
     values.sort(key=itemgetter(5))
@@ -477,13 +482,17 @@ async def report_email_AUTO_values(date=None) -> dict:
                         automatic_dict[row[1]]['Сколько затрачено времени? (часов\минут)'].append(row[10])
 
                 except Exception as err:
-                    await log_err(func='report_email_AUTO_values', message=err, path_file='report_email')
+                    await log_err(func=f"{__name__} report_email_AUTO_values", message=err)
     del values
+
+    await my_logers.log_info(
+        func=f"{__name__} report_email_AUTO_values",
+        message=f"Составление электронного отчёта (автоматический участок)\n")
 
     return automatic_dict
 
 
-async def report_email_SBOR_and_UniCrimp_values(date=None) -> dict:
+async def report_email_SBOR_and_UniCrimp_or_HBQ_values(date=None) -> dict:
     import os.path
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials
@@ -517,10 +526,8 @@ async def report_email_SBOR_and_UniCrimp_values(date=None) -> dict:
                                     range=sbor_SAMPLE_RANGE_NAME).execute()
         values = result.get('values', [])
     except HttpError as err:
-        await log_info(
-            func="report_email_SBOR_and_UniCrimp_values",
-            path_file='report_email',
-            message=err)
+        await log_err(
+            func=f"{__name__} report_email_SBOR_and_UniCrimp_or_HBQ_values", message=err)
 
     # сортировать список "values" по "Наименование изделия"
     values.sort(key=itemgetter(1))
@@ -575,10 +582,13 @@ async def report_email_SBOR_and_UniCrimp_values(date=None) -> dict:
                                 'Сколько затрачено времени? (часов\минут)'].append(row[6])
                 except Exception as err:
                     await log_err(
-                        func='report_email_SBOR_and_UniCrimp_values',
-                        message=err,
-                        path_file='report_email')
+                        func=f"{__name__} report_email_SBOR_and_UniCrimp_or_HBQ_values", message=err)
     del values
+
+    await my_logers.log_info(
+        func=f"{__name__} report_email_SBOR_and_UniCrimp_or_HBQ_values",
+        message=f"Составление электронного отчёта (сборочный участок)\n")
+
     return sbor_dict
 
 

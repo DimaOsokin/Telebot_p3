@@ -36,7 +36,7 @@ async def start_button_auto_lvl_1(message):
         ReplyKeyboardMarkup, KeyboardButton, \
         InlineKeyboardMarkup, InlineKeyboardButton
 
-    second_first_name = select_first_and_seconds_name(message.from_user.id)
+    second_first_name = await select_first_and_seconds_name(message.from_user.id)
     button_start_lvl_1 = KeyboardButton('Меню')
     kb = ReplyKeyboardMarkup(resize_keyboard=True).add(button_start_lvl_1)
 
@@ -55,14 +55,14 @@ async def today_inlain_report_auto(user_fio, report_today_date, report_yesterday
     from aiogram.utils.exceptions import MessageTextIsEmpty
     from connect_to_DB_p3 import check_report_yesterday_or_today_auto
     try:  # автоматический участок СЕГОДНЯ
-        today_report_func_auto = check_report_yesterday_or_today_auto(report_today_date, user_fio)
+        today_report_func_auto = await check_report_yesterday_or_today_auto(report_today_date, user_fio)
         # при отсутствии отчёта - пустая строка, то принудительная ошибка MessageTextIsEmpty
         if today_report_func_auto == '':
             raise MessageTextIsEmpty("Message text is empty")
         return today_report_func_auto
     # за сегодня отчётов нет
     except MessageTextIsEmpty:
-        yesterday_report_func_auto = check_report_yesterday_or_today_auto(report_yesterday_date, user_fio)
+        yesterday_report_func_auto = await check_report_yesterday_or_today_auto(report_yesterday_date, user_fio)
         # при отсутствии отчёта - пустая строка, то return None
         if yesterday_report_func_auto == '':
             return None
@@ -81,14 +81,14 @@ async def today_inlain_report_VRO(user_fio, report_today_date, report_yesterday_
     from aiogram.utils.exceptions import MessageTextIsEmpty
     from connect_to_DB_p3 import check_report_yesterday_or_today_VRO
     try:  # ВРО СЕГОДНЯ
-        today_report_func_VRO = check_report_yesterday_or_today_VRO(report_today_date, user_fio)
+        today_report_func_VRO = await check_report_yesterday_or_today_VRO(report_today_date, user_fio)
         # при отсутствии отчёта - пустая строка, то принудительная ошибка MessageTextIsEmpty
         if today_report_func_VRO == '':
             raise MessageTextIsEmpty("Message text is empty")
         return today_report_func_VRO
     # за сегодня отчётов нет
     except MessageTextIsEmpty:
-        yesterday_report_func_VRO = check_report_yesterday_or_today_VRO(report_yesterday_date, user_fio)
+        yesterday_report_func_VRO = await check_report_yesterday_or_today_VRO(report_yesterday_date, user_fio)
         # при отсутствии отчёта - пустая строка, то return None
         if yesterday_report_func_VRO == '':
             return None

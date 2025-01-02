@@ -1,8 +1,8 @@
 from mysql.connector import connect
 from values_in_all_report import *
+import my_logers
 
-
-def del_all_rows_in_DB_tabel_sbor():
+async def del_all_rows_in_DB_tabel_sbor():
     import connection_data
     with connect(
             host=connection_data.host,
@@ -15,7 +15,7 @@ def del_all_rows_in_DB_tabel_sbor():
             conn.commit()
 
 
-def del_all_rows_in_DB_tabel_auto():
+async def del_all_rows_in_DB_tabel_auto():
     import connection_data
     with connect(
             host=connection_data.host,
@@ -28,7 +28,7 @@ def del_all_rows_in_DB_tabel_auto():
             conn.commit()
 
 
-def del_all_rows_in_DB_tabel_VRO():
+async def del_all_rows_in_DB_tabel_VRO():
     import connection_data
     with connect(
             host=connection_data.host,
@@ -41,8 +41,8 @@ def del_all_rows_in_DB_tabel_VRO():
             conn.commit()
 
 
-def load_full_table_report_sbor():
-    values_report_sbor = full_values_report_sbor()
+async def load_full_table_report_sbor():
+    values_report_sbor = await full_values_report_sbor()
     # импорт данных для соединения с БД
     import connection_data
     with connect(
@@ -70,8 +70,8 @@ def load_full_table_report_sbor():
             conn.commit()
 
 
-def load_full_table_report_auto():
-    values_report_auto = full_values_report_auto()
+async def load_full_table_report_auto():
+    values_report_auto = await full_values_report_auto()
     # импорт данных для соединения с БД
     import connection_data
     with connect(
@@ -106,8 +106,8 @@ def load_full_table_report_auto():
                 conn.commit()
 
 
-def load_full_table_report_VRO():
-    values_report_VRO = full_values_report_VRO()
+async def load_full_table_report_VRO():
+    values_report_VRO = await full_values_report_VRO()
     # импорт данных для соединения с БД
     import connection_data
     with connect(
@@ -137,7 +137,7 @@ def load_full_table_report_VRO():
             conn.commit()
 
 
-def del_yesterday_report_sbor():
+async def del_yesterday_report_sbor():
     from datetime import datetime, timedelta
     yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
     import connection_data
@@ -152,7 +152,7 @@ def del_yesterday_report_sbor():
             conn.commit()
 
 
-def del_yesterday_report_auto():
+async def del_yesterday_report_auto():
     from datetime import datetime, timedelta
     yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
     import connection_data
@@ -167,7 +167,7 @@ def del_yesterday_report_auto():
             conn.commit()
 
 
-def del_yesterday_report_VRO():
+async def del_yesterday_report_VRO():
     from datetime import datetime, timedelta
     yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
     import connection_data
@@ -182,22 +182,22 @@ def del_yesterday_report_VRO():
             conn.commit()
 
 
-def all_del_rows_report():
-    del_all_rows_in_DB_tabel_auto()
-    del_all_rows_in_DB_tabel_VRO()
-    del_all_rows_in_DB_tabel_sbor()
+async def all_del_rows_report():
+    await del_all_rows_in_DB_tabel_auto()
+    await del_all_rows_in_DB_tabel_VRO()
+    await del_all_rows_in_DB_tabel_sbor()
 
 
-def all_del_yesterday_report():
-    del_yesterday_report_auto()
-    del_yesterday_report_VRO()
-    del_yesterday_report_sbor()
+async def all_del_yesterday_report():
+    await del_yesterday_report_auto()
+    await del_yesterday_report_VRO()
+    await del_yesterday_report_sbor()
 
 
-def all_load_full_table_report():
-    load_full_table_report_auto()
-    load_full_table_report_VRO()
-    load_full_table_report_sbor()
+async def all_load_full_table_report():
+    await load_full_table_report_auto()
+    await load_full_table_report_VRO()
+    await load_full_table_report_sbor()
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import pandas as pd
-
+import my_logers
 
 async def calendar_auto_string(month=None, fio=None, year=None, weekends=False, next_month=False) -> str:
     """
@@ -48,8 +48,8 @@ async def calendar_auto_string(month=None, fio=None, year=None, weekends=False, 
         result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
                                     range=SAMPLE_RANGE_NAME_end_space).execute()
         values = result.get('values', [])
-    except Exception as e:
-        print(e)
+    except Exception as err:
+        await my_logers.log_err(func=f"{__name__} select_all_employee", message=err)
 
     # преобразование всех данных в датафрейм
     valuesDF = pd.DataFrame(values)
@@ -122,27 +122,5 @@ async def calendar_auto_string(month=None, fio=None, year=None, weekends=False, 
             return full_mouth_weekends_list
 
 
-# def calendar_auto_list(work_dates_string) -> list:
-#     """
-#     Преобразование строки со сменами - во вложенный список
-#     Непрерывная последовательность смен занимает отдельную строку
-#     Если непрерывная последовательность равна 1 элементу, то так же занимает целую строку
-#     """
-#     big_lists_split = work_dates_string.split('\n')
-#     work_dates_list = []
-#     for value in big_lists_split:
-#         # разделение строки в список при каждой интерации
-#         value = list(value.strip().split(' '))
-#         # добавление списка в общий список
-#         work_dates_list.append(value)
-#
-#     return work_dates_list
-
-
 if __name__ == '__main__':
     pass
-
-    m = 'Октябрь'
-    fio = 'Марченко Алексей'
-    print(calendar_auto_string(m, fio))
-    # calendar_auto_list(calendar_auto_string(fio))

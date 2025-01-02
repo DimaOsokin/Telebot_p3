@@ -52,7 +52,7 @@ async def schedule_auto_update_reports(morning=False, evening=False, night=False
     elif night:
         del night
         print(f'night {datetime.now()}')
-        # нужно обработать 1 день в месяце, желательно ночью
+        # нужно, что бы данная функция отработала 1 день в месяце, желательно ночью
         try:
             var = await all_del_rows_report()
             del var
