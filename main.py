@@ -699,7 +699,6 @@ async def see_all_employees(message):
         list_people = await select_all_employee()
         peoples = ''
         for row_tup in list_people:
-
             if 'Шарипов Карим' in str(row_tup):
                 pass
             else:
