@@ -699,8 +699,13 @@ async def see_all_employees(message):
         list_people = await select_all_employee()
         peoples = ''
         for row_tup in list_people:
-            row_str = '    '.join(map(str, row_tup))
-            peoples += f"{row_str}\n"
+
+            if 'Шарипов Карим' in str(row_tup):
+                pass
+            else:
+                print(row_tup)
+                row_str = '    '.join(map(str, row_tup))
+                peoples += f"{row_str}\n"
         await bot.send_message(message.chat.id, peoples)
 
         await my_logers.log_info(
